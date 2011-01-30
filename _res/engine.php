@@ -1,12 +1,5 @@
 <?php
 	
-	function endswith($string, $test) {
-    	$strlen = strlen($string);
-    	$testlen = strlen($test);
-    	if ($testlen > $strlen) return false;
-    	return substr_compare($string, $test, -$testlen) === 0;
-	}
-	
 	// get the document root for the current directory
 	$doc_root = $_SERVER['SCRIPT_FILENAME'];
 	$doc_root_pieces = explode("/",$doc_root);
@@ -33,20 +26,56 @@
 	
 	
 	if ($file !== false) {
+	
+		// if the file the user requested exists, show it
 		$unformatted_content = file_get_contents ( $file );
 		$the_content = Markdown($unformatted_content);
 		$the_title = "Test Page!!";
 		include($doc_root.TEMPLATEPATH);
-	}
-	else {
-		$the_title = "Page not found.";
-		$the_content = "<h1>404 - Page not found</h1>\n\n<p>Sorry, but this link is bad. ".
-			"Please notify the webmaster of the site where you found it.</p>";
-		header("HTTP/1.0 404 Not Found");
-		include($doc_root.TEMPLATEPATH);
+	
+	} else {
+		
+		// if the file the user requested doesn't exist, show a 404
+		
+		if (is_file($doc_root.TEMPLATEPATH."404.md")) {
+			
+			// if the template has a 404.md, use that for the markdown text...
+			$unformatted_content = file_get_contents ( $doc_root.TEMPLATEPATH."404.md" );
+			$the_content = Markdown($unformatted_content);
+			$the_title = "Test Page!!";
+			header("HTTP/1.0 404 Not Found");
+			include($doc_root.TEMPLATEPATH);
+			
+		} else {
+			
+			// ...otherwise use the default markdown text
+			$the_title = "Page not found.";
+			$the_content = "<h1>404 - Page not found</h1>\n\n<p>Sorry, but this link is bad. ".
+				"Please notify the webmaster of the site where you found it.</p>";
+			header("HTTP/1.0 404 Not Found");
+			include($doc_root.TEMPLATEPATH);
+			
+		}
+		
 	}
 	
 	
+	
+	/* --- UTILITY FUNCTIONS --- */
+	
+	
+	// returns a BOOL indicating whether the provided
+	// $string ends with the string $test
+	function endswith($string, $test) {
+    	$strlen = strlen($string);
+    	$testlen = strlen($test);
+    	if ($testlen > $strlen) return false;
+    	return substr_compare($string, $test, -$testlen) === 0;
+	}
+	
+
+	// generates a (text-only, for now) sitemap including
+	// only the markdown files
 	function sitemap( $doc_root , $base_path = "" ) {
 		
 
