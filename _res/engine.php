@@ -1,13 +1,5 @@
 <?php
 	
-	$markdown_ext = "md|markdown|MARKDOWN|text";
-	$template = "default";
-	
-	
-	// Settings are all done, no need to modify below this point.
-	
-	include_once('_res/markdown.php');
-	
 	function endswith($string, $test) {
     	$strlen = strlen($string);
     	$testlen = strlen($test);
@@ -21,7 +13,10 @@
 	array_pop($doc_root_pieces);
 	$doc_root = implode("/",$doc_root_pieces)."/";
 	
-	// if there's no 
+	// include resources
+	include_once($doc_root.'_res/md/markdown.php');
+	
+	// if there's no requested path, use markdown file named 'index'.
 	if (isset($_GET["mdpg"]) && strlen($_GET["mdpg"]) > 0) $mdpg = $_GET["mdpg"];
 	else $mdpg = "index";
 	
@@ -29,42 +24,54 @@
 	
 	$file = false;
 	
-	foreach (explode("|",$markdown_ext) as $ext) {
+	foreach (explode("|",MARKDOWN_EXTS) as $ext) {
 		if (file_exists($doc_root.$mdpg.".".$ext)) {
 			$file = $doc_root.$mdpg.".".$ext;
 			break;
 		}
 	}
 	
+	
 	if ($file !== false) {
 		$unformatted_content = file_get_contents ( $file );
 		$the_content = Markdown($unformatted_content);
 		$the_title = "Test Page!!";
-		include("_templates/".$template."/template.php");
+		include($doc_root.TEMPLATEPATH);
 	}
-	else echo "404.";
+	else {
+		$the_title = "Page not found.";
+		$the_content = "<h1>404 - Page not found</h1>\n\n<p>Sorry, but this link is bad. ".
+			"Please notify the webmaster of the site where you found it.</p>";
+		header("HTTP/1.0 404 Not Found");
+		include($doc_root.TEMPLATEPATH);
+	}
 	
 	
 	function sitemap( $doc_root , $base_path = "" ) {
 		
-		//echo "sitemapping ".$doc_root.$base_path."<br>";
+
 		if (is_dir($doc_root.$base_path)) {
+			
+			// get an array containing all filenames in the directory
 			$filenames = scandir($doc_root.$base_path);
+			
+			// iterate through all filenames, ignoring:  .  ..  _res  _template
 			foreach ($filenames as $fn) { if ($fn != "." && $fn != ".." && $fn != "_template"&& $fn != "_res") {
-				
-				if (is_dir($doc_root.$base_path.$fn)) { sitemap($doc_root,$base_path.$fn."/"); }
-				else {
-					echo $base_path.$fn."<br>";
-					foreach (explode("|",$markdown_ext) as $ext) {
-						if (endswith($fn,".".$ext)) {
-							echo $base_path.$fn;
-						}
+					
+					// run this function recursively for directories
+					if (is_dir($doc_root.$base_path.$fn)) { sitemap($doc_root,$base_path.$fn."/"); }
+					else {
+						
+						// look at only the files ending with a markdown extension...
+						foreach (explode("|",MARKDOWN_EXTS) as $ext) { if (endswith($fn,".".$ext)) {
+							
+							// echo them into a list
+							echo $base_path.$fn."<br>";
+						
+						} }
+						
 					}
-				}
-				
-				//echo "ALL: ".$base_path.$fn."<br>";
-				
-			}}
+					
+			} }
 		}
-		
 	}
