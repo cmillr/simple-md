@@ -13,6 +13,9 @@
 	if (isset($_GET["mdpg"]) && strlen($_GET["mdpg"]) > 0) $mdpg = $_GET["mdpg"];
 	else $mdpg = "index";
 	
+	// if the file requested is a directory, request the 'index' file inside that dir
+	if (is_dir($doc_root.$mdpg)) $mdpg .= "/index";
+	
 	if ($mdpg == "sitemap") { sitemap($doc_root); exit(); }
 	
 	$file = false;
@@ -85,22 +88,20 @@
 			$filenames = scandir($doc_root.$base_path);
 			
 			// iterate through all filenames, ignoring:  .  ..  _res  _template
-			foreach ($filenames as $fn) { if ($fn != "." && $fn != ".." && $fn != "_template"&& $fn != "_res") {
+			foreach ($filenames as $fn) { 
+				if ($fn != "." && $fn != ".." && $fn != "_template"&& $fn != "_res") {
 					
 					// run this function recursively for directories
 					if (is_dir($doc_root.$base_path.$fn)) { sitemap($doc_root,$base_path.$fn."/"); }
 					else {
 						
 						// look at only the files ending with a markdown extension...
-						foreach (explode("|",MARKDOWN_EXTS) as $ext) { if (endswith($fn,".".$ext)) {
+						foreach (explode("|",MARKDOWN_EXTS) as $ext) { 
+							if (endswith($fn,".".$ext)) {
 							
-							// echo them into a list
-							echo $base_path.$fn."<br>";
+								// echo them into a list
+								echo $base_path.$fn."<br>";
 						
-						} }
-						
-					}
-					
-			} }
-		}
-	}
+	}	}	}	}	}	}	}
+	
+	
