@@ -108,6 +108,9 @@
 		
 
 		if (is_dir($doc_root.$base_path)) {
+		
+			// set up a return array
+			$to_return = array();
 			
 			// get an array containing all filenames in the directory
 			$filenames = scandir($doc_root.$base_path);
@@ -124,9 +127,26 @@
 						foreach (explode("|",MARKDOWN_EXTS) as $ext) { 
 							if (endswith($fn,".".$ext)) {
 							
+								// get the path minus extension minus period
+								$without = $base_path.substr($fn,0,-strlen(".".$ext));
+								//$without = substr($fn,0,-strlen(".".$ext));
+								
+								// strip 'index' from the path
+								if (endswith($without,"/index")) { $without = substr($without,0,-6); }
+							
 								// echo them into a list
-								echo $base_path.$fn."<br>";
+								//$to_return[] = $without;
+								echo "<a href=\"/".$without."/\">".$without."</a><br>";
 						
-	}	}	}	}	}	}	}
+							}	
+						}	
+					}	
+				}
+			}
+			
+			//return $to_return;
+				
+		}	
+	}
 	
 	

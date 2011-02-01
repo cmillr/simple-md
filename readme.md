@@ -34,6 +34,19 @@ with a file called `template.php`; then change the template setting
 in your `/index.php` file to match the directory name, and you're
 all set!
 
-You can optionally include a 404.md file inside your template
+You can optionally include a `404.md` file inside your template
 directory if you'd like to customize the text of your 404 page.
+
+## FAQ
+
+### So like, why do all the directory names start with an underscore?
+
+Good question. On a Mac, which I do use (please refrain from
+spitting until you're away from delicate electronics) as well as 
+on Linux and most UNIX systems, directories are typically listed 
+among the actual files, sorted alphabetically. So using all these 
+underscore-led directory names will keep the system directories at
+the top of the listing, and therefore will keep them from mingling
+in the *rest* of the listing with all your markdown documents and 
+structural directories.
 
