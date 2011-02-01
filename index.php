@@ -45,16 +45,46 @@
 	$template = "default";
 	
 	
+	/*
+	
+	DIR INDEX PRIORITY variable
+	-----------------
+	
+	This is a boolean indicating whether a directory index.md
+	page will take precedence over a file named the same as the
+	directory.
+	
+	For example, if you have both:
+	
+	example.md
+	example/index.md
+	
+	Which of these should be displayed at the /example/ path?
+	
+	TRUE = the directory index.md takes precedence
+	FALSE = the non-index file takes precedence
+	
+	Default:
+	$dir_index_priority = true;
+	
+	*/
+	$dir_index_priority = true;
 	
 	
 	
-	/* ### DO NOT EDIT BELOW THIS POINT. */
+	
+	
+	
+	/* That's it, you're all done! Enjoy SimpleMD! */
+	
+	
+	/* --------------------- DO NOT EDIT BELOW THIS POINT. --------------------- */
 	
 	
 	// we know all we need to know about this environment, so set the constants
 	define('TEMPLATEPATH','_template/'.$template.'/template.php');
 	define('MARKDOWN_EXTS',$markdown_ext);
-	
+	define('DIR_FIRST',$dir_index_priority);
 	
 	
 	

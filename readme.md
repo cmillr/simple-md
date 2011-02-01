@@ -11,9 +11,8 @@ want them to be, save the file, and close. You'll be ready to go!
 
 ## Directories
 
-	_
-	_res
-	_template
+    $ ls
+    _               _res            _template       index.php
 
 These three directories contain resources for the website.  Anything
 you put in the `_` directory will be accessible from the internet,

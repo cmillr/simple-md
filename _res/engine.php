@@ -1,31 +1,32 @@
 <?php
 	
+	// check current path for the all-important trailing slash
+	if ( ! endswith($_SERVER['REQUEST_URI'],"/") ) { 
+	    header("Location: ".$_SERVER['REQUEST_URI']."/");
+	    exit(); 
+	}
+	
 	// get the document root for the current directory
 	$doc_root = $_SERVER['SCRIPT_FILENAME'];
 	$doc_root_pieces = explode("/",$doc_root);
 	array_pop($doc_root_pieces);
 	$doc_root = implode("/",$doc_root_pieces)."/";
 	
-	// include resources
+	// include markdown resources
 	include_once($doc_root.'_res/md/markdown.php');
 	
-	// if there's no requested path, use markdown file named 'index'.
+	// if there's no requested path, look for a markdown file named 'index'.
 	if (isset($_GET["mdpg"]) && strlen($_GET["mdpg"]) > 0) $mdpg = $_GET["mdpg"];
-	else $mdpg = "index";
+	else $mdpg = "index/";
 	
-	// if the file requested is a directory, request the 'index' file inside that dir
-	if (is_dir($doc_root.$mdpg)) $mdpg .= "/index";
+	// strip the trailing slash
+	$mdpg = substr($mdpg, 0, strlen($mdpg)-1);
 	
+	// TODO: handle sitemap better
 	if ($mdpg == "sitemap") { sitemap($doc_root); exit(); }
 	
-	$file = false;
-	
-	foreach (explode("|",MARKDOWN_EXTS) as $ext) {
-		if (file_exists($doc_root.$mdpg.".".$ext)) {
-			$file = $doc_root.$mdpg.".".$ext;
-			break;
-		}
-	}
+	// see if the file exists
+	$file = find_file( $doc_root.$mdpg , DIR_FIRST );
 	
 	
 	if ($file !== false) {
@@ -38,8 +39,7 @@
 	
 	} else {
 		
-		// if the file the user requested doesn't exist, show a 404
-		
+		// if the file the user requested doesn't exist, show a 404		
 		if (is_file($doc_root.TEMPLATEPATH."404.md")) {
 			
 			// if the template has a 404.md, use that for the markdown text...
@@ -74,6 +74,31 @@
     	$testlen = strlen($test);
     	if ($testlen > $strlen) return false;
     	return substr_compare($string, $test, -$testlen) === 0;
+	}
+	
+	
+	// returns either a string indicating the correct
+	// path to the file, or FALSE if it couldn't be found
+	function find_file ( $file_string , $dir_first = true ) {
+		
+		// if we need to check the directory first, then
+		// call this function recursively to do so
+		if ( $dir_first && is_dir($file_string)) { 
+			$dir_file = find_file($file_string."/index",false);
+			if ($dir_file !== false ) return $dir_file;
+		}
+		
+		// check the file path with all possible extensions
+		foreach (explode("|",MARKDOWN_EXTS) as $ext) {
+			if (file_exists($file_string.".".$ext)) {
+				return $file_string.".".$ext;
+			}
+		}
+		
+		// if we haven't found anything yet, then
+		// we're out of luck; return false
+		return false;	
+		
 	}
 	
 
