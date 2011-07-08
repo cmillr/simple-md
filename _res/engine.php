@@ -8,9 +8,7 @@
 	
 	// get the document root for the current directory
 	$doc_root = $_SERVER['SCRIPT_FILENAME'];
-	$doc_root_pieces = explode("/",$doc_root);
-	array_pop($doc_root_pieces);
-	$doc_root = implode("/",$doc_root_pieces)."/";
+	$doc_root = implode('/',explode('/',$doc_root,-1)).'/';
 	
 	// include markdown resources
 	include_once($doc_root.'_res/md/markdown.php');
