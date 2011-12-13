@@ -2,12 +2,18 @@
 
 The SimpleMD website engine is intended for very simple, text-based
 websites.  The idea is to install SimpleMD on your server and then
-maintain your website entirely inside a markdown file tree.
+maintain your website entirely inside a markdown file tree, which 
+will completely eliminate the high overhead of using a database for
+your website.
 
 The root directory of SimpleMD contains three directories and an
 `index.php` file.  You'll want to edit the `index.php` to find
 several options at the top; make sure the options are set as you
 want them to be, save the file, and close. You'll be ready to go!
+
+You'll likely also want to delete this file and the other temporary
+markdown files in the root, as you'll probably not want them to be
+a part of your website.
 
 ## Directories
 
