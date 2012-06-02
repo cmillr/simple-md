@@ -1,6 +1,26 @@
 <?php
 	
 	ini_set('error_reporting', E_ALL);
+
+	/*
+	PATHS
+	-----
+
+	These are the paths the system relies upon to know where
+	the various site resources are. These paths are defined
+	as follows:
+
+	doc_root - the directory containing all the public html
+	simplemd_root - the directory containing the simplemd code
+	content_root - the root for all your markdown documents
+	template_root - the direcory containing your templates
+
+	*/
+
+	$doc_root = '.';
+	$simplemd_root = '../simplemd';
+	$content_root = '../content';
+	$template_root = '../simplemd/templates/';
 	
 	/*
 	
@@ -81,13 +101,20 @@
 	/* --------------------- DO NOT EDIT BELOW THIS POINT. --------------------- */
 	
 	
-	// we know all we need to know about this environment, so set the constants
-	define('TEMPLATEPATH','_template/'.$template.'/template.php');
+	// we know all we need to know about this environment, so set the constants	
+	
+	define('DOC_ROOT',realpath($doc_root));
+	define('SIMPLEMD_ROOT',realpath($simplemd_root));
+	define('CONTENT_ROOT',realpath($content_root));
+	define('TEMPLATE_ROOT',realpath($template_root));
+	define('TEMPLATEPATH',TEMPLATE_ROOT.'/'.$template);
+	define('TEMPLATE',TEMPLATEPATH.'/template.php');
+
 	define('MARKDOWN_EXTS',$markdown_ext);
 	define('DIR_FIRST',$dir_index_priority);
 	
 	
 	
 	// start 'er up
-	include("../simplemd/engine.php");
+	include(SIMPLEMD_ROOT.'/engine.php');
 	

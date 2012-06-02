@@ -1,0 +1,3 @@
+[submodule "simplemd/markdown"]
+	path = simplemd/markdown
+	url = http://github.com/michelf/php-markdown.git

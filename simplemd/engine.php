@@ -5,15 +5,9 @@
 	    header("Location: ".$_SERVER['REQUEST_URI']."/");
 	    exit(); 
 	}
-	
-	// get the document root for the current directory
-	$doc_root = implode('/',explode('/',$_SERVER['SCRIPT_FILENAME'],-1)).'/';
 
-	// get the markdown document root
-	$content_root = implode('/',explode('/',$doc_root,-1)).'/content/';
-	
 	// include markdown resources
-	include_once($doc_root.'markdown/markdown.php');
+	include_once( SIMPLEMD_ROOT.'/markdown/markdown.php' );
 	
 	// if there's no requested path, look for a markdown file named 'index'.
 	if (isset($_GET["mdpg"]) && strlen($_GET["mdpg"]) > 0) $mdpg = $_GET["mdpg"];
@@ -23,10 +17,10 @@
 	$mdpg = substr($mdpg, 0, strlen($mdpg)-1);
 	
 	// TODO: handle sitemap better
-	if ($mdpg == "sitemap") { sitemap($doc_root); exit(); }
+	if ($mdpg == "sitemap") { sitemap(CONTENT_ROOT); exit(); }
 	
 	// see if the file exists
-	$file = find_file( $content_root.$mdpg , DIR_FIRST );
+	$file = find_file( CONTENT_ROOT.'/'.$mdpg , DIR_FIRST );
 	
 	
 	if ($file !== false) {
@@ -35,19 +29,19 @@
 		$unformatted_content = file_get_contents ( $file );
 		$the_content = Markdown($unformatted_content);
 		$the_title = "Test Page!!";
-		include($doc_root.TEMPLATEPATH);
+		include(TEMPLATE);
 	
 	} else {
 		
 		// if the file the user requested doesn't exist, show a 404		
-		if (is_file($doc_root.TEMPLATEPATH."404.md")) {
+		if (is_file($doc_root.TEMPLATEPATH."/404.md")) {
 			
 			// if the template has a 404.md, use that for the markdown text...
-			$unformatted_content = file_get_contents ( $doc_root.TEMPLATEPATH."404.md" );
+			$unformatted_content = file_get_contents ( $doc_root.TEMPLATEPATH."/404.md" );
 			$the_content = Markdown($unformatted_content);
 			$the_title = "Test Page!!";
 			header("HTTP/1.0 404 Not Found");
-			include($doc_root.TEMPLATEPATH);
+			include(TEMPLATE);
 			
 		} else {
 			
@@ -56,7 +50,7 @@
 			$the_content = "<h1>404 - Page not found</h1>\n\n<p>Sorry, but this link is bad. ".
 				"Please notify the webmaster of the site where you found it.</p>";
 			header("HTTP/1.0 404 Not Found");
-			include($doc_root.TEMPLATEPATH);
+			include(TEMPLATE);
 			
 		}
 		
