@@ -89,5 +89,5 @@
 	
 	
 	// start 'er up
-	include("_res/engine.php");
+	include("../simplemd/engine.php");
 	

@@ -8,9 +8,12 @@
 	
 	// get the document root for the current directory
 	$doc_root = implode('/',explode('/',$_SERVER['SCRIPT_FILENAME'],-1)).'/';
+
+	// get the markdown document root
+	$content_root = implode('/',explode('/',$doc_root,-1)).'/content/';
 	
 	// include markdown resources
-	include_once($doc_root.'_res/md/markdown.php');
+	include_once($doc_root.'markdown/markdown.php');
 	
 	// if there's no requested path, look for a markdown file named 'index'.
 	if (isset($_GET["mdpg"]) && strlen($_GET["mdpg"]) > 0) $mdpg = $_GET["mdpg"];
@@ -23,7 +26,7 @@
 	if ($mdpg == "sitemap") { sitemap($doc_root); exit(); }
 	
 	// see if the file exists
-	$file = find_file( $doc_root.$mdpg , DIR_FIRST );
+	$file = find_file( $content_root.$mdpg , DIR_FIRST );
 	
 	
 	if ($file !== false) {
